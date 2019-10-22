@@ -1,0 +1,6 @@
+server:
+  port: 4040
+
+logging:
+  file:
+    path: ./logs
