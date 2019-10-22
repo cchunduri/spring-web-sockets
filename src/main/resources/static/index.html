@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js" integrity="sha256-4jNHNewFZSwkUiWXCfjQ0erj6guZPNAjfiJQiBHk4K4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <p>Hi</p>
+    <input type="textarea" id="msg"/>
+    <br />
+    <button onclick="sendMessage()">Send</button>
+
+    <p id="rmsg"></p>
+    <script>
+        var socket = new SockJS('/stomp');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            stompClient.subscribe('/topic/send', function(data){
+                document.getElementById("rmsg").innerHTML = "&nbsp;<b>"+ data.body +"</b>";
+            });
+        });
+       
+        function sendMessage() {
+            stompClient.send("/app/send", {}, JSON.stringify({
+                'sender': 'Chaitanya',
+                'message': document.getElementById('msg').value,
+                'type': 'Chat'
+            }));
+        }
+    </script>
+</body>
+</html>
